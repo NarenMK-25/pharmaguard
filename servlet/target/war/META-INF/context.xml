@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+  <!-- Pooled MySQL connection used by Db.java. Edit username/password. -->
+  <Resource name="jdbc/PharmaDB" auth="Container" type="javax.sql.DataSource"
+            driverClassName="com.mysql.cj.jdbc.Driver"
+            url="jdbc:mysql://localhost:3306/pharmaguard?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Asia/Kolkata"
+            username="root" password="bruno"
+            maxTotal="30" maxIdle="10" maxWaitMillis="5000"/>
+</Context>

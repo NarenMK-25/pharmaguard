@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="4.0">
+  <filter>
+    <filter-name>AuthFilter</filter-name>
+    <filter-class>com.pharmaguard.AuthFilter</filter-class>
+    <!-- secret MUST equal TOKEN_SECRET in web/config.php -->
+    <init-param><param-name>secret</param-name><param-value>change-this-secret-key</param-value></init-param>
+    <!-- exact origin that serves the PHP pages (scheme + host + port) -->
+    <init-param><param-name>allowedOrigin</param-name><param-value>http://localhost</param-value></init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <url-pattern>/api/*</url-pattern>
+  </filter-mapping>
+</web-app>
