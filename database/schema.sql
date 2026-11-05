@@ -1,6 +1,5 @@
 -- PharmaGuard schema + demo data (MySQL 8)
-CREATE DATABASE IF NOT EXISTS pharmaguard CHARACTER SET utf8mb4;
-USE pharmaguard;
+-- Select or create the target database before importing this file.
 
 CREATE TABLE users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,

@@ -1,10 +1,11 @@
 # Use the official PHP image with Apache
 FROM php:8.2-apache
 
-# Install the PDO MySQL extension required by your login system
 RUN docker-php-ext-install pdo pdo_mysql
+RUN sed -i 's/Listen 80/Listen 10000/' /etc/apache2/ports.conf \
+    && sed -i 's/:80>/:10000>/' /etc/apache2/sites-available/000-default.conf
 
-# Copy your frontend PHP/HTML/JS files into the Apache web root
 COPY . /var/www/html/
+RUN chown -R www-data:www-data /var/www/html/uploads
 
-EXPOSE 80
+EXPOSE 10000

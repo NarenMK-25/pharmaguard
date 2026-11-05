@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: pharmaguard
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./web/Dockerfile
+    dockerContext: ./web
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "4000"
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_SSL_CA
+        value: /etc/secrets/tidb-ca.pem

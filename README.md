@@ -1,34 +1,44 @@
 # PharmaGuard: Pharmacy Stock and Expiry Alert System
 
-HTML5/CSS3/JavaScript + PHP 8 + Java Servlets (Tomcat 9) + MySQL 8
+PHP 8 + MySQL 8 + HTML/CSS/JavaScript. The website and its JSON API run together, so Java/Tomcat is not required for the current app.
 
-## Layout
-- `database/schema.sql`  tables, indexes and demo data
-- `web/`                 PHP pages (login, dashboard, medicines, stock, prescriptions) + CSS/JS
-- `servlet/`             Maven WAR: AuthFilter, AlertsServlet, DispenseServlet, ReceiveServlet
+## Host publicly on Render (free)
 
-## Who does what
-| Tier | Responsibility |
-|---|---|
-| PHP | login + sessions, medicine CRUD, prescription upload (type/size check, private storage), page rendering |
-| Servlets | expiry/low-stock/reorder queries, FEFO dispensing in one locked transaction, batch receiving, token check |
-| JavaScript | fetches `/api/alerts`, renders tables, CSV export, posts dispense/receive forms with no page reload |
+This repo includes [render.yaml](./render.yaml) for a free Docker web service. Render will give it a public `onrender.com` URL. The app needs a separate MySQL-compatible database: Render's free Postgres is not compatible with this app's MySQL schema, and Render's free Postgres currently expires after 30 days.
 
-PHP signs a cookie (`pg_token`, HMAC-SHA256). The Java `AuthFilter` verifies it, so one login covers both tiers.
+1. Push this repository to GitHub and connect it to Render. In Render, choose **New + > Blueprint** and select the repo; accept the `pharmaguard` web service from `render.yaml`.
+2. Create a free MySQL-compatible TiDB Cloud Starter instance (or another externally reachable MySQL-compatible database), enable its public endpoint, and allow connections from Render. Copy its host, port, database name, user and password. TiDB's current free Starter quota is 5 GiB storage and 50 million request units per month per eligible MySQL-compatible instance; quota limits can suspend new connections until reset.
+3. Configure `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASS` in the Render service's environment. For TiDB, set `DB_PORT` to the port shown by its connection settings (usually 4000), add its CA certificate as a Render secret file at `/etc/secrets/tidb-ca.pem`, and keep `DB_SSL_CA` set to that path.
+4. Select the target database in TiDB's SQL editor and run `database/schema.sql` from this repository to create tables and demo stock.
+5. After Render deploys, open the public URL and visit `/install.php` once. Then **delete `install.php` from the deployed site** (or remove it from the repo and redeploy). Sign in with `admin / Admin@123` or `pharma / Pharma@123`.
 
-## Setup
-1. **Database:** `mysql -u root -p < database/schema.sql`
-2. **PHP:** copy `web/` to Apache's web root as `pharmaguard/` (e.g. XAMPP `htdocs/pharmaguard`).
-   Edit `config.php` (DB user/password). Open `http://localhost/pharmaguard/install.php` once, then delete `install.php`.
-3. **Servlets:**
-   - Put the MySQL connector JAR (`mysql-connector-j-8.x.jar`) in Tomcat's `lib/` folder.
-   - Edit `servlet/src/main/webapp/META-INF/context.xml` (DB user/password).
-   - `cd servlet && mvn package`, then copy `target/pharmaguard.war` to Tomcat's `webapps/` and start Tomcat 9.
-4. **Secrets must match:** `TOKEN_SECRET` in `web/config.php` = `secret` in `servlet/.../WEB-INF/web.xml`. Change both from the default.
-5. If Apache is not on port 80, set `allowedOrigin` in `web.xml` to your exact origin (e.g. `http://localhost:8081`).
-6. Sign in at `http://localhost/pharmaguard/` with `admin / Admin@123` (can receive stock) or `pharma / Pharma@123`.
+**Free-tier behavior:** Render spins a free web service down after 15 minutes without traffic; the next visit can take about a minute to wake it. Free web services also have a 750-hour monthly allowance. Render free services have no persistent disk, so prescription files uploaded to this demo are lost on spin-down, restart, or deploy. The external database is separate and has its own quotas/availability. This can stay online as a hobby/demo for months while providers keep their free tiers available and within quota, but it is not guaranteed uptime or durable file storage. Do not store real patient data.
 
-Tomcat 10+ uses `jakarta.*` instead of `javax.*`; use Tomcat 9 with this code.
+## Host on InfinityFree
+
+1. Create a hosting account and website in InfinityFree, then create a MySQL database in its control panel. Note the database hostname, full database name, username, and password.
+2. Open that database in phpMyAdmin, select it, and import `database/schema.sql`.
+3. Edit `web/config.php` and replace `DB_HOST`, `DB_NAME`, `DB_USER`, and `DB_PASS` with the values from the InfinityFree control panel.
+4. Upload the **contents** of `web/` (including `api/`, `assets/`, and `uploads/`) to the site's `htdocs` directory. Do not upload the Java `servlet/` folder.
+5. Visit `https://your-domain/install.php` once to create the demo accounts, then delete `install.php` from `htdocs`.
+6. Sign in with `admin / Admin@123` or `pharma / Pharma@123`.
+
+The `.htaccess` files disable directory listings, block direct access to the database config and uploaded prescription files, and leave prescription viewing to the authenticated PHP page. Keep HTTPS enabled.
+
+`install.php` creates known demo credentials. This sample application is not designed for storing real patient/medical records; do not use it with real patient data or public-facing pharmacy operations.
+
+## Run locally
+
+1. Create a MySQL database named `pharmaguard`, then import the schema with `mysql -u root -p pharmaguard < database/schema.sql`.
+2. Set the database values in `web/config.php` to your local credentials.
+3. Serve `web/` with PHP 8 and the PDO MySQL extension (for example, point Apache's document root at `web/`).
+4. Visit `install.php` once, delete it, and sign in with one of the demo accounts above.
+
+## Project layout
+
+- `database/schema.sql` — tables and demo stock data.
+- `web/` — PHP pages, same-origin API endpoints, CSS/JS and private prescription storage.
+- `servlet/` — legacy Tomcat implementation; not needed by the PHP-hosted site.
 
 ## Demo script for the viva
 1. Dashboard shows expiring, expired and low-stock rows (from the demo data).

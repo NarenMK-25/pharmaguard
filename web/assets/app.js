@@ -1,5 +1,4 @@
-// Hardcoded backend URL for Render deployment
-const API = 'https://pharmaguard-backend.onrender.com'; 
+const API = document.body.dataset.api;
 
 const $ = (s) => document.querySelector(s);
 let lowRows = [];
@@ -32,7 +31,7 @@ function fill(table, rows, cols, emptyText) {
 
 async function loadDashboard() {
   try {
-    const d = await api('/alerts');
+    const d = await api('/alerts.php');
     lowRows = d.lowStock;
     $('#c-exp').textContent = d.expiring.length;
     $('#c-expired').textContent = d.expired.length;
@@ -69,3 +68,31 @@ function downloadCsv() {
 
 if ($('#t-low')) {
   loadDashboard();
+}
+
+$('#csv-btn')?.addEventListener('click', downloadCsv);
+
+document.querySelectorAll('form[data-endpoint]').forEach((form) => {
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button');
+    const message = form.querySelector('.msg');
+    button.disabled = true;
+    message.hidden = false;
+    message.className = 'msg';
+    message.textContent = 'Saving...';
+    try {
+      const result = await api(API + form.dataset.endpoint, {
+        method: 'POST',
+        body: new FormData(form)
+      });
+      message.classList.add('ok');
+      message.textContent = result.message;
+      window.setTimeout(() => window.location.reload(), 1200);
+    } catch (error) {
+      message.classList.add('err');
+      message.textContent = error.message;
+      button.disabled = false;
+    }
+  });
+});

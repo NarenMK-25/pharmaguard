@@ -13,8 +13,9 @@ function med_options(array $meds): string {
 page_start('Stock', 'stock'); ?>
 
 <div class="two-col">
-  <form class="panel" data-endpoint="/dispense">
+  <form class="panel" data-endpoint="/dispense.php">
     <h2>Dispense</h2>
+    <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
     <label>Medicine <select name="medicine_id" required><?= med_options($meds) ?></select></label>
     <label>Quantity <input type="number" name="quantity" min="1" required></label>
     <button class="btn">Dispense</button>
@@ -23,8 +24,9 @@ page_start('Stock', 'stock'); ?>
   </form>
 
   <?php if ($_SESSION['role'] === 'ADMIN'): ?>
-  <form class="panel" data-endpoint="/receive">
+  <form class="panel" data-endpoint="/receive.php">
     <h2>Receive a batch</h2>
+    <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
     <label>Medicine <select name="medicine_id" required><?= med_options($meds) ?></select></label>
     <label>Batch number <input name="batch_no" required maxlength="30"></label>
     <label>Expiry date <input type="date" name="expiry_date" required min="<?= date('Y-m-d', strtotime('+1 day')) ?>"></label>

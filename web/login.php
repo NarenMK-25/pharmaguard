@@ -11,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['uid'] = (int)$u['user_id'];
         $_SESSION['name'] = $u['full_name'];
         $_SESSION['role'] = $u['role'];
-        issue_token((int)$u['user_id'], $u['role']);
         header('Location: dashboard.php'); exit;
     }
     $error = 'Username or password is incorrect.';
