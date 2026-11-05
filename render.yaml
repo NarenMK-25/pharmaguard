@@ -19,3 +19,5 @@ services:
         sync: false
       - key: DB_SSL_CA
         value: /etc/ssl/certs/ca-certificates.crt
+      - key: PUBLIC_DEMO_DASHBOARD
+        value: "true"

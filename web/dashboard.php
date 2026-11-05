@@ -1,6 +1,9 @@
 <?php
-require 'config.php'; require_login(); require 'layout.php';
+require 'config.php'; require_dashboard_access(); require 'layout.php';
 page_start('Today at the pharmacy', 'dashboard'); ?>
+<?php if (empty($_SESSION['uid'])): ?>
+<div class="msg">Public demo dashboard · Read-only · Sample data only. Do not use for real pharmacy or patient data.</div>
+<?php endif; ?>
 <div id="alert-error" class="msg err" hidden></div>
 
 <section class="cards">

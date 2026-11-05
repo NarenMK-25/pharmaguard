@@ -1,7 +1,9 @@
 <?php
 require __DIR__ . '/_bootstrap.php';
 api_require_method('GET');
-api_require_user();
+if (empty($_SESSION['uid']) && !public_demo_dashboard_enabled()) {
+    api_fail(401, 'Not signed in, or session expired.');
+}
 
 try {
     $expiring = $pdo->query(

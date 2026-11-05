@@ -1,6 +1,9 @@
 <?php
 function page_start(string $title, string $active): void {
-    $links = ['dashboard' => 'Dashboard', 'medicines' => 'Medicines', 'stock' => 'Stock', 'prescriptions' => 'Prescriptions'];
+    $signedIn = !empty($_SESSION['uid']);
+    $links = $signedIn
+        ? ['dashboard' => 'Dashboard', 'medicines' => 'Medicines', 'stock' => 'Stock', 'prescriptions' => 'Prescriptions']
+        : ['dashboard' => 'Dashboard'];
 ?>
 <!doctype html>
 <html lang="en">
@@ -20,7 +23,11 @@ function page_start(string $title, string $active): void {
       <a href="<?= $file ?>.php"<?= $active === $file ? ' class="on"' : '' ?>><?= $label ?></a>
     <?php endforeach; ?>
   </nav>
-  <span class="who"><?= e($_SESSION['name']) ?> (<?= e(strtolower($_SESSION['role'])) ?>) &nbsp;<a href="logout.php">Sign out</a></span>
+  <span class="who"><?php if ($signedIn): ?>
+    <?= e($_SESSION['name']) ?> (<?= e(strtolower($_SESSION['role'])) ?>) &nbsp;<a href="logout.php">Sign out</a>
+  <?php else: ?>
+    Public demo &nbsp;<a href="login.php">Staff sign in</a>
+  <?php endif; ?></span>
 </header>
 <main>
 <h1><?= e($title) ?></h1>

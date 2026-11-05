@@ -37,6 +37,17 @@ try {
 
 function e($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
+function public_demo_dashboard_enabled(): bool {
+    return getenv('PUBLIC_DEMO_DASHBOARD') === 'true';
+}
+
+function require_dashboard_access(): void {
+    if (empty($_SESSION['uid']) && !public_demo_dashboard_enabled()) {
+        header('Location: login.php');
+        exit;
+    }
+}
+
 function require_login(): void {
     if (empty($_SESSION['uid'])) { header('Location: login.php'); exit; }
 }
