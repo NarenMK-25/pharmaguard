@@ -93,4 +93,4 @@ INSERT INTO stock_movements (batch_id, medicine_id, move_type, qty, created_at) 
  (1,1,'DISPENSE',150,NOW() - INTERVAL 20 DAY),(2,1,'DISPENSE',200,NOW() - INTERVAL 8 DAY),
  (3,2,'DISPENSE',90,NOW() - INTERVAL 15 DAY),(6,4,'DISPENSE',70,NOW() - INTERVAL 10 DAY),
  (7,4,'DISPENSE',40,NOW() - INTERVAL 3 DAY),(9,6,'DISPENSE',12,NOW() - INTERVAL 6 DAY);
--- Users are created by web/install.php (so passwords are hashed by PHP).
+-- Provision users separately; store password_hash() output in password_hash.
