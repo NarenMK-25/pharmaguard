@@ -3,11 +3,15 @@
 date_default_timezone_set('Asia/Kolkata');
 session_start();
 
-const DB_DSN  = 'mysql:host=localhost;dbname=pharmaguard;charset=utf8mb4';
-const DB_USER = 'root';
-const DB_PASS = 'bruno';
-const TOKEN_SECRET = 'change-this-secret-key';              // must equal "secret" in servlet web.xml
-const API_BASE = 'http://localhost:8080/pharmaguard/api';   // Tomcat servlet endpoints
+// 1. UPDATE THESE 3 LINES WITH YOUR CLEVER CLOUD/REMOTE DB CREDENTIALS
+const DB_DSN  = 'mysql:host=your-remote-cloud-host.com;dbname=your_remote_db_name;charset=utf8mb4';
+const DB_USER = 'your_remote_user';
+const DB_PASS = 'your_remote_password'; 
+
+const TOKEN_SECRET = 'change-this-secret-key';               // must equal "secret" in servlet web.xml
+
+// 2. UPDATE THIS LINE WITH YOUR LIVE RENDER BACKEND URL
+const API_BASE = 'https://pharmaguard-tmk3.onrender.com/api';   // Tomcat servlet endpoints
 
 $pdo = new PDO(DB_DSN, DB_USER, DB_PASS, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
