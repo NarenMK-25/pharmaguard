@@ -1,5 +1,6 @@
-// Talks to the Java servlets (cookie-authenticated) and renders results with textContent (no XSS).
-const API = document.body.dataset.api;
+// Hardcoded backend URL for Render deployment
+const API = 'https://pharmaguard-backend.onrender.com'; 
+
 const $ = (s) => document.querySelector(s);
 let lowRows = [];
 
@@ -68,25 +69,3 @@ function downloadCsv() {
 
 if ($('#t-low')) {
   loadDashboard();
-  $('#csv-btn').addEventListener('click', downloadCsv);
-}
-
-// Dispense / Receive forms post to the servlets without reloading the page.
-document.querySelectorAll('form[data-endpoint]').forEach((form) => {
-  form.addEventListener('submit', async (ev) => {
-    ev.preventDefault();
-    const out = form.querySelector('.msg');
-    out.hidden = false; out.className = 'msg'; out.textContent = 'Saving...';
-    try {
-      const d = await api(form.dataset.endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(new FormData(form))
-      });
-      out.className = 'msg ok'; out.textContent = d.message + ' Reloading the stock list...';
-      setTimeout(() => location.reload(), 1200);
-    } catch (e) {
-      out.className = 'msg err'; out.textContent = e.message;
-    }
-  });
-});
