@@ -8,7 +8,7 @@ This repo includes [render.yaml](./render.yaml) for a free Docker web service. R
 
 1. Push this repository to GitHub and connect it to Render. In Render, choose **New + > Blueprint** and select the repo; accept the `pharmaguard` web service from `render.yaml`.
 2. Create a free MySQL-compatible TiDB Cloud Starter instance (or another externally reachable MySQL-compatible database), enable its public endpoint, and allow connections from Render. Copy its host, port, database name, user and password. TiDB's current free Starter quota is 5 GiB storage and 50 million request units per month per eligible MySQL-compatible instance; quota limits can suspend new connections until reset.
-3. Configure `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASS` in the Render service's environment. For TiDB, set `DB_PORT` to the port shown by its connection settings (usually 4000), add its CA certificate as a Render secret file at `/etc/secrets/tidb-ca.pem`, and keep `DB_SSL_CA` set to that path.
+3. Configure `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASS` in the Render service's environment. For TiDB, set `DB_PORT` to the port shown by its connection settings (usually 4000) and set `DB_SSL_CA` to `/etc/ssl/certs/ca-certificates.crt` so PHP verifies TLS with the container's trusted root certificates.
 4. Select the target database in TiDB's SQL editor and run `database/schema.sql` from this repository to create tables and demo stock.
 5. After Render deploys, open the public URL and visit `/install.php` once. Then **delete `install.php` from the deployed site** (or remove it from the repo and redeploy). Sign in with `admin / Admin@123` or `pharma / Pharma@123`.
 
