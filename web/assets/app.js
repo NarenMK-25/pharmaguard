@@ -1,5 +1,5 @@
 // Hardcoded backend URL for Render deployment
-const API = 'https://pharmaguard-backend.onrender.com'; 
+const API = 'https://pharmaguard-tmk3.onrender.com/'; 
 
 const $ = (s) => document.querySelector(s);
 let lowRows = [];
