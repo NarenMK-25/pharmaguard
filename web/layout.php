@@ -15,7 +15,7 @@ function page_start(string $title, string $active): void {
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 </head>
-<body data-api="<?= e('/' . trim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/api') ?>">
+<body data-api="<?= e(rtrim('/' . trim(dirname($_SERVER['SCRIPT_NAME']), '/'), '/') . '/api') ?>">
 <header class="bar">
   <a class="brand" href="dashboard.php">PharmaGuard</a>
   <nav>
