@@ -1,6 +1,7 @@
 <?php
 // Shared settings, DB connection, session and CSRF helpers.
 date_default_timezone_set('Asia/Kolkata');
+ini_set('display_errors', '0');
 ini_set('session.use_strict_mode', '1');
 session_set_cookie_params([
     'httponly' => true,
@@ -26,7 +27,13 @@ if ($dbSslCa) {
     $dbOptions[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
 }
 
-$pdo = new PDO($dbDsn, $dbUser, $dbPass, $dbOptions);
+try {
+    $pdo = new PDO($dbDsn, $dbUser, $dbPass, $dbOptions);
+} catch (PDOException $error) {
+    error_log('PharmaGuard database connection failed: ' . $error->getMessage());
+    http_response_code(503);
+    exit('Database unavailable. Check the hosting database settings.');
+}
 
 function e($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 
